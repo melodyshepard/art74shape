@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			body {
+				background-color: #ffffff;
+				margin: 0;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="http://threejsplaygnd.brangerbriz.net/js/three.min.js"></script>
+		<script src="http://threejsplaygnd.brangerbriz.net/js/Detector.js"></script>
+		<script>
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var camera, scene, renderer;
+			var geometry, material, mesh;
+
+			function setup() {
+
+				var W = window.innerWidth, H = window.innerHeight;
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( W, H );
+				document.body.appendChild( renderer.domElement );
+
+				camera = new THREE.PerspectiveCamera( 50, W/H, 1, 10000 );
+				camera.position.z = 500;
+
+				scene = new THREE.Scene();
+
+
+				// paste your code from the geometryGUI here
+				geometry = new THREE.TorusKnotGeometry(111, 72.17, 59, 18, 7.22, 2.67, 1.91);
+				material = new THREE.MeshNormalMaterial({shading: THREE.FlatShading});
+
+				for ( var i = 0; i < geometry.vertices.length; i ++ ) {
+					var vertices = [];
+					for ( var v = 0; v < geometry.vertices.length; v ++ ) {
+						vertices.push( geometry.vertices[ v ].clone() );
+						if ( v === i ) {
+							vertices[ vertices.length - 1 ].x *= 2;
+							vertices[ vertices.length - 1 ].y *= 2;
+							vertices[ vertices.length - 1 ].z *= 2;
+						}
+					}
+					geometry.morphTargets.push( { name: "target" + i, vertices: vertices } );
+				}
+
+				mesh = new THREE.Mesh(geometry, material);
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.83;
+				mesh.position.y = 72.79;
+				mesh.rotation.x = 4.32;
+				mesh.rotation.y = 4.41;
+				mesh.rotation.z = 3.88;
+
+				mesh.material.morphTargets = true;
+
+
+				scene.add(mesh);
+
+				bg = document.body.style;
+				bg.background = '#a0e2ff';
+
+
+
+			}
+
+			function draw() {
+
+				requestAnimationFrame( draw );
+
+
+				// experiment with code from the snippets menu here
+				mesh.morphTargetInfluences[ 2 ] = Math.sin( Date.now() * 0.002 );
+
+				renderer.render( scene, camera )
+				mesh.position.y = Math.sin( Date.now() * 0.002 ) * 300
+
+			}
+
+			setup();
+			draw();
+
+		</script>
+
+	</body>
+</html>
